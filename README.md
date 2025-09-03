@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Тестове завдання: Сервіс планування подорожей
+Мета:
+Розробити веб-додаток (Node.js + React), де користувачі можуть створювати власні подорожі, додавати до них місця та запрошувати інших користувачів співпрацювати над конкретною подорожжю.
 
-## Getting Started
+Функціональні вимоги (MVP)
 
-First, run the development server:
+1. Auth (JWT):
+   • /register — створення акаунта (роль за замовчуванням User).
+   • /login — вхід.
+   • Збереження стану авторизації (токен).
+   Примітка: якщо користувач створює подорож, він автоматично стає Owner цієї подорожі.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Подорожі (Trips):
+   • Список моїх подорожей (де я Owner або Collaborator).
+   • Створення подорожі: title, description?, startDate?, endDate?.
+   • Якщо дати задані — перевірка, що startDate ≤ endDate (початок не пізніше завершення).
+   • Перегляд деталей подорожі.
+   • Редагування/видалення лише своїх подорожей (ACL).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Місця (Places) в подорожі:
+   • На сторінці подорожі — список місць, відсортований за dayNumber (зростання).
+   • Додавання місця: locationName, notes?, dayNumber (ціле число ≥ 1, означає порядковий день подорожі, наприклад: 1 — перший день, 2 — другий і т. д.).
+   • Редагування/видалення місця.
+   • Права:
+   • Owner і Collaborator можуть керувати місцями.
+   • Інші користувачі — не мають доступу.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Запрошення (email) до співпраці:
+   • На сторінці подорожі Owner вводить email і надсилає інвайт на роль Collaborator.
+   • Відправляється email із посиланням (одноразовий токен).
+   • За посиланням користувач приймає інвайт і отримує доступ до цієї подорожі як Collaborator.
+   • Обмеження:
+   • Не можна запрошувати самого себе.
+   • Один активний інвайт на той самий email і цю ж подорож.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Ролі:
+   • Owner (власник подорожі): CRUD подорожі, запрошення, CRUD місць.
+   • Collaborator: CRUD місць у наданій подорожі, без права видаляти подорож.
+   • User (без доступу): не бачить чужих подорожей/місць.
 
-## Learn More
+Сторінки (мінімум)
+• /register, /login
+• /trips — список моїх подорожей (пошук за назвою — опційно)
+• /trips/:id — деталі подорожі + список місць (CRUD за правами)
+• /trips/:id/access — форма інвайту (email), список наданих доступів (лише Owner)
 
-To learn more about Next.js, take a look at the following resources:
+Додатково (якщо залишиться час)
+• /verify-email, /forgot-password — email-підтвердження та відновлення паролю.
+• Термін дії інвайту (наприклад, 24 години) та відкликання інвайту.
+• • Пошук/сортування подорожей на /trips.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ReactQuery - Використати для UI

@@ -7,7 +7,7 @@ interface User {
     email: string
 }
 
-const UsersList = async () => {
+const UsersPage = async () => {
     const res = await fetch('https://jsonplaceholder.typicode.com/users')
     const users: User[] = await res.json()
     
@@ -27,4 +27,4 @@ const UsersList = async () => {
     )
 }
 
-export default UsersList
+export default UsersPage
