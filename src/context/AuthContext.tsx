@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType>({
 async function fetchUser() {
   const res = await fetch("/api/auth/me");
   if (!res.ok) throw new Error("Failed to fetch user");
-  return res.json();
+    return res.json();
 }
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["authUser"],
     queryFn: fetchUser,
-    retry: false, // щоб не робив нескінченних спроб
+    retry: false,
   });
 
   const refreshUser = () => {

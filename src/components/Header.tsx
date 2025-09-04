@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
@@ -35,9 +36,14 @@ export default function Header() {
       </h1>
       {loggedIn ? (
         <div className="flex items-center gap-4">
+          <Link href={'/trips'}>
+            <button className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-700">
+              Trips
+            </button>
+          </Link>
           <button
             onClick={handleLogout}
-            className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+            className="bg-red-500 px-4 py-2 rounded hover:bg-red-700"
           >
             Вийти
           </button>
