@@ -40,7 +40,18 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         await connectDB()
-        
+        const user = userData(req.headers.get('cookie') as any)
+
+        const { title,  description, startDate, endDate } = await req.json()
+
+        if (startDate > endDate) {
+            return NextResponse.json({ error: 'Start must be no later than the finish!' }, { status: 400 })
+        }
+
+        const newTrip = new Trip({ title, description, startDate, endDate, owner: user._id })
+        await newTrip.save()
+
+        return NextResponse.json({ message: 'Подорож створено!' }, { status: 201 })
     } catch (err) {
         console.error(err)
         throw err

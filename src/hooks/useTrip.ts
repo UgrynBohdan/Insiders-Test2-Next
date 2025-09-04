@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
 interface Trip {
@@ -8,8 +8,15 @@ interface Trip {
     owner: string
     collaborators: string[]
     places: string[]
-    endDate: Date | null
-    startDate: Date | null
+    endDate: string | null
+    startDate: string | null
+}
+
+export interface NewTrip {
+    title: string
+    description?: string
+    startDate?: string
+    endDate?: string
 }
 
 async function getUserTrips() {
@@ -22,7 +29,18 @@ async function getUserTrips() {
     }
 }
 
+async function postNewTrip(newTrip: NewTrip) {
+    try {
+        const { data } = await axios.post('/api/trips', newTrip, { withCredentials: true })
+        return data.newTrip
+    } catch (err) {
+        console.error(err)
+        throw err
+    }
+}
+
 function useTrip() {
+    const queryClient = useQueryClient()
     
     const { data: trips, isLoading: tripsIsLoading, error } = useQuery({
         queryKey: ["userTrips"],
@@ -30,10 +48,19 @@ function useTrip() {
         // retry: false,
     })
 
+    const newTripMutation = useMutation({
+        mutationFn: postNewTrip,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['userTrips'] })
+        }
+    })
+
     return {
         trips,
         tripsIsLoading,
-        tripsError: error
+        tripsError: error,
+        newTrip: newTripMutation
+
     }
 
 }
