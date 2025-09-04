@@ -1,5 +1,5 @@
 import { connectDB } from "@/db/db"
-import User from "@/db/models/User"
+import { User } from "@/db/models/User"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { NextResponse } from "next/server"
@@ -40,6 +40,7 @@ export async function POST(req: Request) {
 
         return response
     } catch (err) {
-        return NextResponse.json({ error: "Помилка сервера" }, { status: 500 })
+        console.error(err)
+        return NextResponse.json({ error: "Помилка сервера", err }, { status: 500 })
     }
 }

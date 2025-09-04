@@ -20,4 +20,4 @@ const TripSchema: Schema = new Schema({
     places: [{ type: Schema.Types.ObjectId, ref: 'Place' }]
 })
 
-export default mongoose.model<ITrip>("Trip", TripSchema)
+export const Trip = mongoose.models.Trip || mongoose.model("Trip", TripSchema)

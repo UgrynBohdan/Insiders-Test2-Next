@@ -17,4 +17,4 @@ const PlaceSchema = new Schema<IPlace>({
 // корисний комбінований індекс для сортування та вибірок
 PlaceSchema.index({ trip: 1, dayNumber: 1, _id: 1 })
 
-export default mongoose.model<IPlace>("Place", PlaceSchema)
+export const Place = mongoose.models.Place || mongoose.model("Place", PlaceSchema);
