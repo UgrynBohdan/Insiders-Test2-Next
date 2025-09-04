@@ -3,7 +3,13 @@ import { NextResponse } from "next/server"
 import jwt from 'jsonwebtoken'
 import { Trip } from "@/db/models/Trip"
 
-const userData = (cookie: string) => {
+interface UserTokenData {
+    userId: string
+    name: string
+    role: string
+}
+
+export const userData = (cookie: string) => {
     const token = cookie
     ?.split("; ")
     .find((row) => row.startsWith("token="))
@@ -20,7 +26,7 @@ export async function GET(req: Request) {
     try {
         await connectDB()
         
-        const user = userData(req.headers.get('cookie') as any)
+        const user = userData(req.headers.get('cookie') as any) as UserTokenData
 
         const allUserTrips = await Trip.find({
             $or: [
@@ -40,7 +46,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         await connectDB()
-        const user = userData(req.headers.get('cookie') as any)
+        const user = userData(req.headers.get('cookie') as any) as UserTokenData
 
         const { title,  description, startDate, endDate } = await req.json()
 
@@ -48,7 +54,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Start must be no later than the finish!' }, { status: 400 })
         }
 
-        const newTrip = new Trip({ title, description, startDate, endDate, owner: user._id })
+        const newTrip = new Trip({ title, description, startDate, endDate, owner: user.userId })
         await newTrip.save()
 
         return NextResponse.json({ message: 'Подорож створено!' }, { status: 201 })

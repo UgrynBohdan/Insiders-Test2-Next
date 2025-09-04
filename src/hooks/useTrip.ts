@@ -1,68 +1,28 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
-interface Trip {
-    _id: number
-    title: string
-    description: string
-    owner: string
-    collaborators: string[]
-    places: string[]
-    endDate: string | null
-    startDate: string | null
-}
-
-export interface NewTrip {
-    title: string
-    description?: string
-    startDate?: string
-    endDate?: string
-}
-
-async function getUserTrips() {
+async function getTrip(tripId: string) {
     try {
-        const { data } = await axios.get('/api/trips', { withCredentials: true })
-        return data.trips as Trip[]
+        const { data } = await axios.get(`/api/trips/${tripId}`, { withCredentials: true })
+        return data.trip
     } catch (err) {
         console.error(err)
         throw err
     }
 }
 
-async function postNewTrip(newTrip: NewTrip) {
-    try {
-        const { data } = await axios.post('/api/trips', newTrip, { withCredentials: true })
-        return data.newTrip
-    } catch (err) {
-        console.error(err)
-        throw err
-    }
-}
-
-function useTrip() {
+function useTrip(tripId: string) {
     const queryClient = useQueryClient()
-    
-    const { data: trips, isLoading: tripsIsLoading, error } = useQuery({
-        queryKey: ["userTrips"],
-        queryFn: getUserTrips,
-        // retry: false,
-    })
 
-    const newTripMutation = useMutation({
-        mutationFn: postNewTrip,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['userTrips'] })
-        }
+    const { data: trip } = useQuery({
+        queryKey: ['chosenTrip', tripId],
+        queryFn: () => getTrip(tripId),
     })
 
     return {
-        trips,
-        tripsIsLoading,
-        tripsError: error,
-        newTrip: newTripMutation
-
+        trip
     }
-
+    
 }
 
 export default useTrip

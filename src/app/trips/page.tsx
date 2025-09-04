@@ -1,6 +1,7 @@
 "use client";
 import NewTripForm from "@/components/NewTripForm";
-import useTrip from "@/hooks/useTrip";
+import useTrip from "@/hooks/useTrips";
+import Link from "next/link";
 import { ReactEventHandler, useState } from "react";
 
 function TripsPage() {
@@ -26,13 +27,15 @@ function TripsPage() {
                 <h2 className="text-2xl font-bold mb-4">Мої подорожі</h2>
                 <ul className="space-y-2">
                     {trips.map((trip: any) => (
-                    <li
-                        key={trip._id}
-                        className="p-2 bg-blue-100 rounded hover:bg-blue-200"
-                    >
-                        <p className="text-center">Title: { trip.title }</p>
-                        {trip.description ? <p className="text-center">Description: { trip.description }</p> : <></>}
-                    </li>
+                        <Link href={`/trips/${trip._id}`}>
+                            <li
+                                key={trip._id}
+                                className="p-2 bg-blue-100 rounded hover:bg-blue-200"
+                            >
+                                <p className="text-center">Title: { trip.title }</p>
+                                {trip.description ? <p className="text-center">Description: { trip.description }</p> : <></>}
+                            </li>
+                        </Link>
                     ))}
                 </ul>
                 {wantAddTrip?

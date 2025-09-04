@@ -1,4 +1,4 @@
-import useTrip, { NewTrip } from "@/hooks/useTrip"
+import useTrip, { NewTrip } from "@/hooks/useTrips"
 import { useState } from "react";
 
 
