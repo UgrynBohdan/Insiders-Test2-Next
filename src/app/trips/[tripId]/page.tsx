@@ -3,6 +3,7 @@
 import InviteFriendForm from "@/components/InviteFriendForm";
 import NewPlaceForm from "@/components/NewPlaceForm";
 import useTrip from "@/hooks/useTrip";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface TripPageProps {
@@ -12,25 +13,41 @@ interface TripPageProps {
 export default function TripDetailsPage({ params }: TripPageProps) {
     const [wantAddPlace, setWantAddPlace] = useState(false)
     const [wantAddCollaborator, setWantAddCollaborator] = useState(false)
+    const router = useRouter()
 
     const tripParams = React.use(params)
-    let { trip, isLoading } = useTrip(tripParams.tripId)
+    let { trip, deleteTrip } = useTrip(tripParams.tripId)
     if (!trip) return <p>Завантаження...</p>
     // console.log(trip)
     
+    const handelDeleteTrip = () => {
+        router.push('/trips')
+        deleteTrip.mutate()
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
             <div className="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full">
-                {/* Заголовок */}
-                <h1 className="text-3xl font-bold text-blue-700 mb-2">{trip.title}</h1>
-                <p className="text-gray-600 mb-4">{trip.description}</p>
+                <div className="flex justify-between items-center">
+                    <div>
+                        {/* Заголовок */}
+                        <h1 className="text-3xl font-bold text-blue-700 mb-2">{trip.title}</h1>
+                        <p className="text-gray-600 mb-4">{trip.description}</p>
 
-                {/* Дати */}
-                <div className="flex gap-4 text-gray-500 mb-6">
-                    <span>📅 {trip.startDate?.toString()}</span>
-                    <span>➡️</span>
-                    <span>📅 {trip.endDate?.toString()}</span>
+                        {/* Дати */}
+                        <div className="flex gap-4 text-gray-500 mb-6">
+                            <span>📅 {trip.startDate?.toString()}</span>
+                            <span>➡️</span>
+                            <span>📅 {trip.endDate?.toString()}</span>
+                        </div>
+                    </div>
+
+                    <button
+                        className="bg-red-500 px-4 py-2 rounded hover:bg-red-700 text-white"
+                        onClick={handelDeleteTrip}
+                    >
+                        Видалити подорож
+                    </button>
                 </div>
 
                 {/* Список місць */}

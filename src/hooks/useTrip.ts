@@ -46,6 +46,16 @@ async function inviteCollaborator(invite: InviteCollaborator) {
     }
 }
 
+async function deleteTripFn(tripId: string) {
+    try {        
+        const { data } = await axios.delete(`/api/trips/${tripId}`, { withCredentials: true })
+        return data
+    } catch (err) {
+        console.error()
+        throw err
+    }
+}
+
 function useTrip(tripId: string) {
     const queryClient = useQueryClient()
 
@@ -62,11 +72,24 @@ function useTrip(tripId: string) {
     })
 
     const invite = useMutation({
-        mutationFn: (email: string) => inviteCollaborator({ tripId, email })
+        mutationFn: (email: string) => inviteCollaborator({ tripId, email }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["chosenTrip", tripId] })
+        }
+    })
+
+    const deleteTrip = useMutation({
+        mutationFn: () => deleteTripFn(tripId),
+        onError: (err) => {
+            alert((err as any).response.data.error)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["userTrips"] })
+        }
     })
 
     return {
-        trip, isLoading, newPlace, inviteCollaborator: invite
+        trip, isLoading, newPlace, inviteCollaborator: invite, deleteTrip
     }
     
 }
