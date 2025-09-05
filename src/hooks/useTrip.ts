@@ -56,6 +56,16 @@ async function deleteTripFn(tripId: string) {
     }
 }
 
+async function deletePlaceFn(tripId: string, placeId: string) {
+    try {
+        const { data } = await axios.delete(`/api/trips/${tripId}/places/${placeId}`, { withCredentials: true })
+        return data
+    } catch (err) {
+        console.error()
+        throw err
+    }
+}
+
 function useTrip(tripId: string) {
     const queryClient = useQueryClient()
 
@@ -88,8 +98,18 @@ function useTrip(tripId: string) {
         }
     })
 
+    const deletePlace = useMutation({
+        mutationFn: (placeId: string) => deletePlaceFn(tripId, placeId),
+        onError: (err) => {
+            alert((err as any).response.data.error)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["chosenTrip", tripId] })
+        }
+    })
+
     return {
-        trip, isLoading, newPlace, inviteCollaborator: invite, deleteTrip
+        trip, isLoading, newPlace, inviteCollaborator: invite, deleteTrip, deletePlace
     }
     
 }

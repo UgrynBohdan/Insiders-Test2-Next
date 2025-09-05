@@ -37,6 +37,6 @@ export async function POST(req: Request, { params }: any) {
         return NextResponse.json({ message: 'Місце створено' }, { status: 201 })
     } catch (err) {
         console.error(err)
-        return NextResponse.json({ error: "Помилка сервера" }, { status: 501 })
+        return NextResponse.json({ error: "Помилка сервера" }, { status: 500 })
     }
 }

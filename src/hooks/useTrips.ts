@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
 interface Place {
-    _id: number
+    _id: string
     locationName: string
     dayNumber: number
     tripId: string
