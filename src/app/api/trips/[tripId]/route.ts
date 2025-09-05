@@ -2,7 +2,7 @@ import { ITrip, Trip } from "@/db/models/Trip"
 import { NextResponse } from "next/server"
 import jwt from 'jsonwebtoken'
 import { UserTokenData } from "../route"
-import { Place } from "@/db/models/Place"
+import { connectDB } from "@/db/db"
 
 export const userData = (cookie: string) => {
     const token = cookie
@@ -17,9 +17,14 @@ export const userData = (cookie: string) => {
     return jwt.decode(token as any) as any
 }
 
+export const hasRight = (user: UserTokenData, trip: ITrip) => {
+    return trip.owner.toString() !== user.userId && !trip.collaborators.some((e) => e.toString() === user.userId)
+}
+
 export async function GET(req: Request, { params }: any) {
     try {
         const awaitParams = await params
+        await connectDB()
 
         const trip = await Trip.findById(awaitParams.tripId) as ITrip
 
@@ -29,10 +34,7 @@ export async function GET(req: Request, { params }: any) {
 
         const user = userData(req.headers.get('cookie') as string) as UserTokenData
         
-        if (
-            trip.owner.toString() !== user.userId &&
-            !trip.collaborators.some((e) => e.toString() ===user.userId)
-        ) {
+        if (hasRight(user, trip)) {
             return NextResponse.json({ error: 'У вас немає доступу до цієї подорожі!' }, { status: 401 })
         }
 
