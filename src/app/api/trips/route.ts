@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import jwt from 'jsonwebtoken'
 import { Trip } from "@/db/models/Trip"
 
-interface UserTokenData {
+export interface UserTokenData {
     userId: string
     name: string
     role: string

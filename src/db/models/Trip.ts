@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose"
+import { Place } from "@/db/models/Place"
 
 export interface ITrip extends Document {
     title: string

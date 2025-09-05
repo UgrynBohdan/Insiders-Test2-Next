@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
-interface Trip {
+export interface Trip {
     _id: number
     title: string
     description: string
