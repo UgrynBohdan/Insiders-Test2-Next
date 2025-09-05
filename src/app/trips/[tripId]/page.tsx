@@ -1,5 +1,6 @@
 "use client";
 
+import InviteFriendForm from "@/components/InviteFriendForm";
 import NewPlaceForm from "@/components/NewPlaceForm";
 import useTrip from "@/hooks/useTrip";
 import React, { useState } from "react";
@@ -10,10 +11,13 @@ interface TripPageProps {
 
 export default function TripDetailsPage({ params }: TripPageProps) {
     const [wantAddPlace, setWantAddPlace] = useState(false)
+    const [wantAddCollaborator, setWantAddCollaborator] = useState(false)
 
     const tripParams = React.use(params)
     let { trip, isLoading } = useTrip(tripParams.tripId)
     if (!trip) return <p>Завантаження...</p>
+    // console.log(trip)
+    
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
@@ -32,7 +36,7 @@ export default function TripDetailsPage({ params }: TripPageProps) {
                 {/* Список місць */}
                 <h2 className="text-2xl font-semibold mb-4">Місця</h2>
                 <ul className="space-y-3">
-                    {trip.places.map((place: any) => (
+                    {trip.places.sort((p1, p2) => p1.dayNumber - p2.dayNumber).map((place) => (
                         // <Link href={`/trips/${place.tripId}/places`} key={place._id}>
                         <li
                             key={place._id}
@@ -45,12 +49,27 @@ export default function TripDetailsPage({ params }: TripPageProps) {
                         // </Link>
                     ))}
                 </ul>
+                {/* Список колаборантів */}
+                <h2 className="text-2xl font-semibold mb-4">Колаборанти</h2>
+                <ul className="space-y-3">
+                    {trip.collaborators.map((collaborator) => (
+                        // <Link href={`/trips/${place.tripId}/places`} key={place._id}>
+                        <li
+                            key={collaborator._id}
+                            className="p-4 bg-blue-50 rounded-lg shadow hover:bg-blue-100 transition"
+                        >
+                            <h4 className="text-xl font-medium text-blue-600">{collaborator.name}</h4>
+                        </li>
+                        // </Link>
+                    ))}
+                </ul>
 
-                
+
+                <div className="flex flex-col gap-2 mt-3">
                 {wantAddPlace ?
                     <NewPlaceForm setWantAddPlace={setWantAddPlace} tripParams={tripParams} />
                 :
-                    <div className="mt-6 flex justify-end">
+                    <div className="flex justify-center">
                         <button
                             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                             onClick={() => setWantAddPlace(true)}
@@ -58,7 +77,20 @@ export default function TripDetailsPage({ params }: TripPageProps) {
                             ➕ Додати місце
                         </button>
                     </div>
-                    }
+                }
+                {wantAddCollaborator ?
+                    <InviteFriendForm setWantAddCollaborator={setWantAddCollaborator} tripId={tripParams.tripId} />
+                :
+                    <div className="flex justify-center">
+                        <button
+                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                            onClick={() => setWantAddCollaborator(true)}
+                        >
+                            😎 Запросити друга
+                        </button>
+                    </div>
+                }
+                </div>
             </div>
         </div>
     );

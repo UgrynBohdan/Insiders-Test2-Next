@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import jwt from 'jsonwebtoken'
 import { UserTokenData } from "../route"
 import { connectDB } from "@/db/db"
+import { Place } from "@/db/models/Place"
 
 export const userData = (cookie: string) => {
     const token = cookie
@@ -38,7 +39,7 @@ export async function GET(req: Request, { params }: any) {
             return NextResponse.json({ error: 'У вас немає доступу до цієї подорожі!' }, { status: 401 })
         }
 
-        // await Place
+        await Place
 
         const tripInfoFull = await trip.populate(['places', 'collaborators'])
         // const tripInfoFull = await trip.populate(['collaborators'])

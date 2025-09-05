@@ -17,7 +17,7 @@ function NewPlaceForm({ setWantAddPlace, tripParams }: {
         const { name, value, type } = e.target
         setFormData((prevData) => ({
             ...prevData,
-            [name]: type === "number" ? (value < 1 ? 1 : Number(value)) : value
+            [name]: type === "number" ? (Number(value) < 1 ? 1 : Number(value)) : value
         }))
     }
 
@@ -78,7 +78,7 @@ function NewPlaceForm({ setWantAddPlace, tripParams }: {
                 type="submit"
                 className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                Створити подорож
+                Додати місце
                 </button>
             </div>
             </form>

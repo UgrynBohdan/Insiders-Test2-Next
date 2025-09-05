@@ -1,13 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
+interface Place {
+    _id: number
+    locationName: string
+    dayNumber: number
+    tripId: string
+    notes?: string
+}
+
+interface Collaborator {
+    _id: string
+    name: string
+    email: string
+    role: string
+}
+
 export interface Trip {
     _id: number
     title: string
     description: string
     owner: string
-    collaborators: string[]
-    places: string[]
+    collaborators: Collaborator[]
+    places: Place[]
     endDate: string | null
     startDate: string | null
 }

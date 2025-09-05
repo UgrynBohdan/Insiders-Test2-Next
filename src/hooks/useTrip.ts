@@ -2,6 +2,20 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { Trip } from "./useTrips"
 
+export interface NewPlace {
+    tripId: string
+    data: {
+        locationName: string
+        dayNumber: number
+        notes?: string
+    }
+}
+
+export interface InviteCollaborator {
+    tripId: string
+    email: string
+}
+
 async function getTrip(tripId: string) {
     try {
         const { data } = await axios.get(`/api/trips/${tripId}`, { withCredentials: true })
@@ -12,18 +26,19 @@ async function getTrip(tripId: string) {
     }
 }
 
-export interface NewPlace {
-    tripId: string
-    data: {
-        locationName: string
-        dayNumber: number
-        notes?: string
-    }
-}
-
 async function createPlace(newPlace: NewPlace) {
     try {        
         const { data } = await axios.post(`/api/trips/${newPlace.tripId}/places`, newPlace.data, { withCredentials: true })
+        return data
+    } catch (err) {
+        console.error()
+        throw err
+    }
+}
+
+async function inviteCollaborator(invite: InviteCollaborator) {
+    try {        
+        const { data } = await axios.post(`/api/trips/${invite.tripId}/invite`, { invitedEmail: invite.email }, { withCredentials: true })
         return data
     } catch (err) {
         console.error()
@@ -46,8 +61,12 @@ function useTrip(tripId: string) {
         }
     })
 
+    const invite = useMutation({
+        mutationFn: (email: string) => inviteCollaborator({ tripId, email })
+    })
+
     return {
-        trip, isLoading, newPlace
+        trip, isLoading, newPlace, inviteCollaborator: invite
     }
     
 }
